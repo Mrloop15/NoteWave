@@ -1,6 +1,6 @@
 # Frontend de NoteWave
 
-SPA Vue 3, TypeScript estricto y Vite, con Vue Router, Pinia, Axios e iconos Lucide. Incluye bienvenida, registro, login/logout, verificación, recuperación y editor adaptable de notas y actividades con búsqueda, filtros y control de versiones. Dictado y PWA todavía pendientes. Ver [contenido](../backend/docs/entries.md). Ver [cuentas y correo local](../backend/docs/identity.md).
+SPA Vue 3, TypeScript estricto y Vite, con Vue Router, Pinia, Axios e iconos Lucide. Incluye bienvenida, registro, login/logout, verificación, recuperación y editor adaptable de notas y actividades con búsqueda, filtros y control de versiones. Dictado con grabación/revisión en modo demostración y controles reutilizables con estilo propio; proveedor real y PWA pendientes. Ver [dictado](../backend/docs/transcription.md). Ver [contenido](../backend/docs/entries.md). Ver [cuentas y correo local](../backend/docs/identity.md).
 
 ## Organización prevista
 

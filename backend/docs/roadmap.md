@@ -14,7 +14,7 @@
 - [ ] Validar compatibilidad y concurrencia en MySQL 8.4.
 - [ ] Ejecutar CI en GitHub y preparar staging.
 
-Estado: base ejecutable, base local y flujos de identidad implementados. Registro, sesión, verificación y recuperación funcionan con correo local y pruebas aisladas. MySQL 8.4, correo de producción, staging y voz siguen pendientes. El módulo de [contenido](entries.md) ya incluye CRUD, búsqueda, filtros, editor y control de versiones. La raíz contiene sólo frontend y backend. Ver [guía local](development.md) y [cuentas](identity.md).
+Estado: base ejecutable, base local y flujos de identidad implementados. Registro, sesión, verificación y recuperación funcionan con correo local y pruebas aisladas. MySQL 8.4, correo de producción, staging y reconocimiento de voz real siguen pendientes. El [flujo de dictado simulado](transcription.md) ya incluye captura, revisión, jobs, cuotas y limpieza. El módulo de [contenido](entries.md) ya incluye CRUD, búsqueda, filtros, editor y control de versiones. La raíz contiene sólo frontend y backend. Ver [guía local](development.md) y [cuentas](identity.md).
 
 ## Incrementos de implementación
 

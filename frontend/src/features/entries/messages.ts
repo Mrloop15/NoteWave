@@ -49,7 +49,7 @@ export const entryMessages = {
   confirmDelete:
     '¿Eliminar este contenido? No se podrá recuperar. También se descartarán los cambios sin guardar.',
   confirmDiscard:
-    'Tienes cambios sin guardar. ¿Quieres descartarlos y continuar?',
+    'Tienes cambios o un dictado sin guardar. ¿Quieres descartarlos y continuar?',
   confirmReload:
     '¿Cargar la versión guardada? Se descartarán los cambios de este borrador.',
   conflict:

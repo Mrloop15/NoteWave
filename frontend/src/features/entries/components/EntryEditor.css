@@ -38,8 +38,8 @@ fieldset {
 .field input,
 textarea {
   width: 100%;
-  border: 1px solid #a8bdb9;
-  border-radius: 9px;
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-control);
   padding: 12px;
   font: inherit;
   color: var(--color-text);

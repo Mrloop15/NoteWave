@@ -7,6 +7,10 @@
   --color-accent: #13777c;
   --color-soft: #eaf4f1;
   --color-border: #dbe7e3;
+  --color-control-border: #a8bdb9;
+  --color-control-hover: #f5faf8;
+  --radius-control: 10px;
+  --shadow-control-focus: 0 0 0 3px #13777c24;
   --radius-panel: 20px;
   --space-page: clamp(1.25rem, 5vw, 5rem);
 }

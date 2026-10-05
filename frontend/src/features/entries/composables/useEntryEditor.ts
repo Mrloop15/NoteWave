@@ -12,6 +12,8 @@ import { entryMessages as text } from '../messages'
 import type { Entry, EntryDraft, EntryKind } from '../types'
 
 export function useEntryEditor(changed: (message: string) => void) {
+  const contextId = ref(0),
+    dictationActive = ref(false)
   const current = ref<Entry | null>(null),
     opened = ref(false),
     loading = ref(false),
@@ -57,14 +59,22 @@ export function useEntryEditor(changed: (message: string) => void) {
     draft[field] = value
     notice.value = ''
   }
+  function setDictationActive(active: boolean) {
+    dictationActive.value = active
+  }
   function canLeave() {
     if (busy.value) {
       error.value = text.wait
       return false
     }
-    return !dirty.value || window.confirm(text.confirmDiscard)
+    return (
+      !(dirty.value || dictationActive.value) ||
+      window.confirm(text.confirmDiscard)
+    )
   }
   function clear() {
+    contextId.value++
+    dictationActive.value = false
     request?.abort()
     opened.value = false
     current.value = null
@@ -199,6 +209,9 @@ export function useEntryEditor(changed: (message: string) => void) {
   }
   onUnmounted(clear)
   return {
+    contextId,
+    dictationActive,
+    setDictationActive,
     current,
     opened,
     loading,

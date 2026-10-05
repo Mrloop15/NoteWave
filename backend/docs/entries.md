@@ -35,4 +35,4 @@ La prueba lanza dos procesos PHP contra la misma versión: espera 200/409 y vers
 
 Resultado local de este incremento: 20 pruebas backend (155 aserciones), 15 pruebas frontend y 9 recorridos de navegador aprobados, además de la prueba de concurrencia. Formato, lint, tipos, build y validación de Composer aprobados. Capturas revisadas en escritorio y móvil.
 
-Siguiente incremento: dictado revisable con proveedor simulado. Perfil, exportación/eliminación de cuenta, PWA y despliegue siguen pendientes.
+Dictado revisable con proveedor simulado implementado; ver [guía](transcription.md). Perfil, exportación/eliminación de cuenta, PWA y despliegue siguen pendientes.

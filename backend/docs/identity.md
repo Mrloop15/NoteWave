@@ -43,4 +43,4 @@ npm.cmd run test:identity
 
 Playwright inicia backend en 8001 y frontend en 5174, aplica migraciones a la base E2E y envía correos de prueba exclusivamente a Mailpit. Rechaza configuración ausente, base incorrecta y caché de configuración activa. Deja cuentas ficticias en la base E2E; no toca usuarios de desarrollo. No se guardan trazas con contraseñas/enlaces de recuperación. Las pruebas de bienvenida siguen en `npm.cmd run test:e2e`.
 
-Todavía pendientes: validación en MySQL 8.4, proveedor de correo de producción, cambios de perfil/contraseña desde la cuenta, exportación/eliminación y el módulo de voz.
+Todavía pendientes: validación en MySQL 8.4, proveedor de correo de producción, cambios de perfil/contraseña desde la cuenta, exportación/eliminación y el reconocimiento real de voz (el flujo simulado ya está disponible).

@@ -37,7 +37,7 @@ Para navegador: `npx.cmd playwright install chromium` y `npm.cmd run test:e2e` e
 
 Las pruebas de salud no consultan la base. Las pruebas de identidad usan SQLite en memoria; los recorridos completos de cuentas usan MariaDB en la base separada notewave_e2e. Ver [cuentas, correo local y pruebas](identity.md).
 
-No hay CI activa: su configuración se conserva en docs/ci/github-actions.example.yml. El correo de identidad requiere Mailpit y un worker de cola; consulta [las instrucciones](identity.md). Scheduler pendiente de los módulos que lo necesiten.
+No hay CI activa: su configuración se conserva en docs/ci/github-actions.example.yml. El correo de identidad requiere Mailpit y un worker de cola; consulta [las instrucciones](identity.md). El dictado simulado requiere FFmpeg, worker y scheduler; consultar [la guía](transcription.md).
 
 ## Producción
 

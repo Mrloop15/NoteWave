@@ -1,0 +1,163 @@
+openapi: 3.1.0
+info:
+  title: NoteWave simulated dictation
+  version: 0.4.0
+  description: >-
+    Verified session and CSRF required. Development provider returns clearly marked
+    sample text, not recognized speech. Audio never becomes an entry automatically.
+    Limits: 120 seconds, at most 10 MiB (lower PHP limits apply), one active job per
+    account, 1200 reserved seconds per UTC day. Cancelled and failed jobs consume
+    reserved quota. Metadata and idempotency keys retained at least 48 hours.
+servers: [{ url: / }]
+security: [{ session: [] }]
+paths:
+  /api/v1/transcriptions/options:
+    get:
+      operationId: dictationOptions
+      responses:
+        "200":
+          description: Current availability and effective upload limits.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      enabled: { type: boolean }
+                      simulated: { const: true }
+                      max_seconds: { type: integer }
+                      max_bytes: { type: integer }
+                      languages:
+                        { type: array, items: { type: string, enum: [es, en] } }
+        "401": { description: Session required. }
+        "403": { description: Email verification required. }
+        "429":
+          {
+            description: Shared domain API limit of 120 requests/minute/account.,
+          }
+  /api/v1/transcriptions:
+    post:
+      operationId: createTranscription
+      description: >-
+        Multipart file bytes are decoded on the server. Accepts decodable WebM/Opus,
+        MP4/AAC, Ogg and WAV. A UUID key plus matching file hash and language replays
+        the same job without another quota reservation. Reusing a key with changed
+        payload returns 409. Retries must retain the original file, language and key.
+        Five uploads per minute per user. Do not log multipart bodies.
+      parameters: [{ $ref: "./openapi.yaml#/components/parameters/Csrf" }]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [audio, language, idempotency_key]
+              properties:
+                audio: { type: string, format: binary }
+                language: { type: string, enum: [es, en] }
+                idempotency_key: { type: string, format: uuid }
+              description: Internal fields including owner, duration, paths, status and transcript are prohibited.
+      responses:
+        "202": { $ref: "#/components/responses/Job" }
+        "401": { description: Session required. }
+        "403": { description: Email verification required. }
+        "409": { description: Idempotency key reused with a different payload. }
+        "413": { description: PHP/proxy request size exceeded. }
+        "419": { $ref: "./openapi.yaml#/components/responses/CsrfError" }
+        "422":
+          {
+            description: Invalid fields,
+            unreadable/empty/silent audio or duration/size exceeded.,
+          }
+        "429":
+          { description: Upload frequency, active job or daily quota exceeded. }
+        "503":
+          {
+            description: Dictation disabled,
+            audio decoder or queue unavailable. Manual editing remains available.,
+          }
+  /api/v1/transcriptions/{transcription}:
+    parameters:
+      - {
+          name: transcription,
+          in: path,
+          required: true,
+          schema: { type: string, description: Owned ULID },
+        }
+    get:
+      operationId: getTranscription
+      description: No-store status and temporary result. Expired results are cleared before returning. Queued/processing jobs older than five minutes are failed and cleaned.
+      responses:
+        "200": { $ref: "#/components/responses/Job" }
+        "401": { description: Session required. }
+        "403": { description: Email verification required. }
+        "404": { description: Missing or foreign job. }
+        "429": { description: Request rate exceeded. }
+    delete:
+      operationId: discardTranscription
+      description: Cancels queued or processing work and deletes retained audio/text. A running provider result is discarded. Metadata remains for quota and idempotency. Repeated deletion is safe while metadata exists.
+      parameters: [{ $ref: "./openapi.yaml#/components/parameters/Csrf" }]
+      responses:
+        "204": { description: Cancelled; private content removed. }
+        "401": { description: Session required. }
+        "403": { description: Email verification required. }
+        "404": { description: Missing or foreign job. }
+        "419": { $ref: "./openapi.yaml#/components/responses/CsrfError" }
+        "429": { description: Request rate exceeded. }
+components:
+  securitySchemes:
+    session: { $ref: "./openapi.yaml#/components/securitySchemes/session" }
+  responses:
+    Job:
+      description: Owned job without owner, storage path, hash or idempotency key.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                required:
+                  [
+                    id,
+                    status,
+                    language,
+                    transcript,
+                    error_code,
+                    duration_seconds,
+                    expires_at,
+                    simulated,
+                  ]
+                properties:
+                  id: { type: string }
+                  status:
+                    {
+                      type: string,
+                      enum:
+                        [queued, processing, ready, failed, cancelled, expired],
+                    }
+                  language: { type: string, enum: [es, en] }
+                  transcript:
+                    {
+                      type: [string, "null"],
+                      maxLength: 20000,
+                      description: Present only when ready.,
+                    }
+                  error_code:
+                    {
+                      type: [string, "null"],
+                      enum:
+                        [
+                          null,
+                          no_speech,
+                          provider_unavailable,
+                          processing_failed,
+                          processing_timeout,
+                          queue_unavailable,
+                        ],
+                    }
+                  duration_seconds: { type: integer, minimum: 1, maximum: 120 }
+                  expires_at: { type: string, format: date-time }
+                  simulated: { const: true }

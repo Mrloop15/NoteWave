@@ -44,6 +44,106 @@ test('private content persists, filters, handles conflicts and works on mobile',
   await page.goto(link)
   await expect(page).toHaveURL(/\/app$/)
   await page.getByRole('button', { name: 'Nueva nota', exact: true }).click()
+  const language = page.getByRole('combobox', { name: 'Idioma del dictado' })
+  await language.click()
+  await expect(page.getByRole('option', { name: 'Español' })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  )
+  await page
+    .locator('.dictation-panel')
+    .screenshot({ path: testInfo.outputPath('dropdown.png') })
+  await language.press('End')
+  await language.press('Enter')
+  await expect(language).toContainText('Inglés')
+  await language.press('Home')
+  await language.press('Enter')
+  await expect(language).toContainText('Español')
+  // A real MediaRecorder captures a synthetic stream; no physical microphone or private speech.
+  await page.evaluate(() => {
+    const audioContext = new AudioContext()
+    const oscillator = audioContext.createOscillator()
+    const destination = audioContext.createMediaStreamDestination()
+    oscillator.connect(destination)
+    oscillator.start()
+    Object.defineProperty(navigator.mediaDevices, 'getUserMedia', {
+      configurable: true,
+      value: async () => destination.stream,
+    })
+    Object.assign(window, {
+      testAudioContext: audioContext,
+      testAudioStream: destination.stream,
+    })
+  })
+  await page
+    .getByLabel('Descripción', { exact: true })
+    .fill('Texto escrito a mano.')
+  await page
+    .getByRole('button', { name: 'Grabar dictado', exact: true })
+    .click()
+  await expect(
+    page.getByRole('status').filter({ hasText: /Grabando.*[1-9] s/ }),
+  ).toBeVisible()
+  await page.getByRole('button', { name: 'Detener grabación' }).click()
+  await page.getByRole('button', { name: 'Reproducir grabación' }).click()
+  await expect(
+    page.getByRole('button', { name: 'Pausar grabación' }),
+  ).toBeVisible()
+  await page.getByRole('button', { name: 'Detener reproducción' }).click()
+  await page
+    .locator('.dictation-panel')
+    .screenshot({ path: testInfo.outputPath('audio-controls.png') })
+  expect(
+    await page.evaluate(() =>
+      (window as unknown as { testAudioStream: MediaStream }).testAudioStream
+        .getTracks()
+        .every((track) => track.readyState === 'ended'),
+    ),
+  ).toBe(true)
+  await page.getByRole('button', { name: 'Enviar grabación' }).click()
+  await expect(
+    page.getByLabel('Revisa y edita el texto de ejemplo'),
+  ).toHaveValue(/\[Demostración\]/, { timeout: 15_000 })
+  await expect(page.getByLabel('Descripción', { exact: true })).toHaveValue(
+    'Texto escrito a mano.',
+  )
+  await page
+    .getByLabel('Revisa y edita el texto de ejemplo')
+    .fill('Texto revisado del dictado.')
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.screenshot({
+    path: testInfo.outputPath('dictation-mobile.png'),
+    fullPage: true,
+  })
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true)
+  await page
+    .getByRole('button', { name: 'Insertar al final de la descripción' })
+    .click()
+  await expect(page.getByLabel('Descripción', { exact: true })).toHaveValue(
+    'Texto escrito a mano.\nTexto revisado del dictado.',
+  )
+  expect(
+    (
+      (await (
+        await page.request.get('/api/v1/entries', {
+          headers: {
+            Accept: 'application/json',
+            Referer: 'http://127.0.0.1:5174/',
+          },
+        })
+      ).json()) as { data: unknown[] }
+    ).data,
+  ).toHaveLength(0)
+  await page.evaluate(() =>
+    (
+      window as unknown as { testAudioContext: AudioContext }
+    ).testAudioContext.close(),
+  )
+  await page.setViewportSize({ width: 1280, height: 900 })
   await page.getByLabel('Título', { exact: true }).fill('Ideas del viaje')
   await page
     .getByLabel('Descripción', { exact: true })

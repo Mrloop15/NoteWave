@@ -12,6 +12,7 @@ body {
 }
 button,
 input,
+select,
 textarea {
   font: inherit;
 }
@@ -31,6 +32,31 @@ button {
 }
 ::selection {
   background: #bce8e4;
+}
+input:not([type='checkbox']):not([type='radio']),
+textarea,
+select {
+  accent-color: var(--color-accent);
+  border-radius: var(--radius-control);
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  border-color: var(--color-accent) !important;
+  box-shadow: var(--shadow-control-focus);
+}
+button:disabled {
+  cursor: not-allowed;
+}
+.primary-button:hover:not(:disabled) {
+  background: #0d6266;
+}
+.secondary-button:hover:not(:disabled) {
+  background: var(--color-soft);
 }
 @media (prefers-reduced-motion: reduce) {
   *,

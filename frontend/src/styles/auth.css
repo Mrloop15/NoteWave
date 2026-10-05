@@ -44,8 +44,8 @@
 }
 .field input {
   width: 100%;
-  border: 1px solid #a8bdb9;
-  border-radius: 9px;
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-control);
   padding: 11px 13px;
   color: var(--color-text);
   background: white;
@@ -66,7 +66,7 @@
   display: inline-block;
   text-align: center;
   text-decoration: none;
-  border-radius: 9px;
+  border-radius: var(--radius-control);
   padding: 12px 20px;
   min-height: 46px;
   font-weight: 600;
@@ -85,7 +85,7 @@
   margin-top: 10px;
 }
 button:disabled {
-  cursor: wait;
+  cursor: not-allowed;
   opacity: 0.6;
 }
 .auth-links {
@@ -98,7 +98,7 @@ button:disabled {
 }
 .notice {
   padding: 12px 14px;
-  border-radius: 9px;
+  border-radius: var(--radius-control);
   font-size: 0.9rem;
   overflow-wrap: anywhere;
 }

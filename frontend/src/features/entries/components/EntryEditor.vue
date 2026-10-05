@@ -117,6 +117,13 @@
         </div>
       </fieldset>
     </form>
+    <DictationPanel
+      :key="editor.contextId"
+      :description="editor.draft.description"
+      :disabled="editor.busy || editor.loading"
+      @insert="insertDictation"
+      @active="dictationActive"
+    />
     <footer v-if="editor.current" class="editor-bottom">
       <span>{{
         editor.current.kind === 'task'

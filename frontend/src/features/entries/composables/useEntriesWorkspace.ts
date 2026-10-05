@@ -74,7 +74,7 @@ export function useEntriesWorkspace() {
     }
   }
   function leave(event: BeforeUnloadEvent) {
-    if (editor.dirty || editor.busy) {
+    if (editor.dirty || editor.busy || editor.dictationActive) {
       event.preventDefault()
       event.returnValue = ''
     }
