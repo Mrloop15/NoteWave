@@ -1,0 +1,21 @@
+# Dependencias y compilación
+node_modules/
+vendor/
+dist/
+coverage/
+.vite/
+
+# Configuración privada (los ejemplos sí se versionan)
+.env
+.env.*
+!.env.example
+!.env.*.example
+auth.json
+
+
+# Reportes de pruebas y archivos del sistema
+playwright-report/
+test-results/
+*.log
+.DS_Store
+Thumbs.db

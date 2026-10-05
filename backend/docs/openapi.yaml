@@ -1,0 +1,42 @@
+openapi: 3.1.0
+info:
+  title: NoteWave API
+  version: 0.1.0
+  description: Implemented foundation endpoints only. Account and content endpoints are planned.
+servers:
+  - url: /
+paths:
+  /health/live:
+    get:
+      operationId: getLiveness
+      summary: Process liveness (does not check the database or providers)
+      responses:
+        '200':
+          $ref: '#/components/responses/Healthy'
+  /api/v1/health:
+    get:
+      operationId: getApiLiveness
+      summary: Versioned API liveness
+      responses:
+        '200':
+          $ref: '#/components/responses/Healthy'
+components:
+  responses:
+    Healthy:
+      description: Application process responds successfully.
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+          description: Includes no-store.
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            required: [status, service]
+            properties:
+              status:
+                const: ok
+              service:
+                const: notewave

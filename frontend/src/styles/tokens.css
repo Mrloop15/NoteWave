@@ -1,0 +1,12 @@
+:root {
+  color-scheme: light;
+  --color-background: #f8faf9;
+  --color-surface: #ffffff;
+  --color-text: #203c40;
+  --color-muted: #536c70;
+  --color-accent: #13777c;
+  --color-soft: #eaf4f1;
+  --color-border: #dbe7e3;
+  --radius-panel: 20px;
+  --space-page: clamp(1.25rem, 5vw, 5rem);
+}
