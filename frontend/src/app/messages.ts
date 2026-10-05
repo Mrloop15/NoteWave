@@ -1,4 +1,8 @@
 export const messages = {
+  createAccount: 'Crear mi cuenta',
+  signIn: 'Iniciar sesión',
+  connectionFailed:
+    'No pudimos comprobar tu sesión. Revisa la conexión y vuelve a entrar.',
   brand: 'NoteWave',
   tagline: 'Menos ruido. Más claridad.',
   eyebrow: 'UN ESPACIO PARA TUS IDEAS',
@@ -8,7 +12,7 @@ export const messages = {
   badge: 'En construcción',
   progressTitle: 'Todo comienza con una idea',
   progressText:
-    'Esta es la primera versión de NoteWave. Pronto podrás crear tu cuenta y organizar tus notas y actividades.',
+    'Ya puedes crear tu cuenta y verificar tu correo. Estamos preparando el editor para organizar tus notas y actividades.',
   features: [
     {
       title: 'Captura tus ideas',

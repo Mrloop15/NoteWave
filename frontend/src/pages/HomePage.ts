@@ -1,4 +1,5 @@
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
+import { useRoute } from 'vue-router'
 import {
   AudioLines,
   CheckCheck,
@@ -13,7 +14,9 @@ import { useServiceHealth } from '../features/operations/composables/useServiceH
 export default defineComponent({
   components: { AudioLines, LockKeyhole, Sprout },
   setup() {
+    const route = useRoute()
     return {
+      connectionFailed: computed(() => route.query.connection === 'failed'),
       messages,
       featureIcons: [NotebookPen, CheckCheck, Mic],
       ...useServiceHealth(),

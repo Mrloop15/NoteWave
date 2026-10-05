@@ -7,10 +7,21 @@
       <span class="stage">{{ messages.badge }}</span>
     </header>
     <main id="main" class="main-content">
+      <p v-if="connectionFailed" class="notice error" role="alert">
+        {{ messages.connectionFailed }}
+      </p>
       <section class="hero" aria-labelledby="welcome-title">
         <p class="eyebrow">{{ messages.eyebrow }}</p>
         <h1 id="welcome-title">{{ messages.headline }}</h1>
         <p class="intro">{{ messages.intro }}</p>
+        <div class="hero-actions">
+          <RouterLink class="primary-button" to="/auth/register">{{
+            messages.createAccount
+          }}</RouterLink
+          ><RouterLink class="secondary-button" to="/auth/login">{{
+            messages.signIn
+          }}</RouterLink>
+        </div>
         <div class="wave" aria-hidden="true">
           <span v-for="bar in 17" :key="bar"></span>
         </div>

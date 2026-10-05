@@ -1,6 +1,6 @@
 # Frontend de NoteWave
 
-SPA Vue 3, TypeScript estricto y Vite instalada, con Vue Router, Pinia, Axios e iconos Lucide. Incluye bienvenida, página 404 y conexión al servicio. La PWA todavía está pendiente.
+SPA Vue 3, TypeScript estricto y Vite, con Vue Router, Pinia, Axios e iconos Lucide. Incluye bienvenida, registro, login/logout, verificación, recuperación y panel inicial de cuenta. Notas y PWA todavía pendientes. Ver [cuentas y correo local](../backend/docs/identity.md).
 
 ## Organización prevista
 

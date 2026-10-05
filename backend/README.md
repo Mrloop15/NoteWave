@@ -1,6 +1,6 @@
 # Backend de NoteWave
 
-API Laravel 12 instalada, con MySQL configurado y migraciones estándar de usuarios, sesiones, caché y colas. Endpoints de salud disponibles; Fortify, Sanctum y los módulos de negocio todavía están pendientes.
+API Laravel 12 con Fortify y Sanctum: registro, sesiones, verificación, recuperación y usuario actual. Base local MariaDB y migraciones de usuarios, sesiones, caché y colas. Los módulos de notas y dictado siguen pendientes. Ver [cuentas y correo local](docs/identity.md).
 
 ## Organización prevista
 

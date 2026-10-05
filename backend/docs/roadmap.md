@@ -14,7 +14,7 @@
 - [ ] Validar compatibilidad y concurrencia en MySQL 8.4.
 - [ ] Ejecutar CI en GitHub y preparar staging.
 
-Estado: base ejecutable y base de datos local configuradas. Fase 1 pendiente de MySQL 8.4 y staging. Registro, contenido y voz siguen pendientes. La raíz contiene sólo frontend y backend; documentación e infraestructura están dentro del backend. Ver [guía local](development.md).
+Estado: base ejecutable, base local y flujos de identidad implementados. Registro, sesión, verificación y recuperación funcionan con correo local y pruebas aisladas. MySQL 8.4, correo de producción, staging, contenido y voz siguen pendientes. La raíz contiene sólo frontend y backend. Ver [guía local](development.md) y [cuentas](identity.md).
 
 ## Incrementos de implementación
 

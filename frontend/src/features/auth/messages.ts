@@ -1,0 +1,63 @@
+export const authMessages = {
+  brand: 'NoteWave',
+  home: 'Volver al inicio',
+  name: 'Nombre',
+  email: 'Correo electrónico',
+  password: 'Contraseña',
+  confirmation: 'Confirmar contraseña',
+  passwordHelp: 'Usa una frase de al menos 12 caracteres que puedas recordar.',
+  busy: 'Un momento…',
+  login: {
+    title: 'Qué bueno tenerte de vuelta',
+    subtitle: 'Entra a tu espacio personal.',
+    submit: 'Iniciar sesión',
+  },
+  register: {
+    title: 'Un espacio para tus ideas',
+    subtitle: 'Crea tu cuenta y da el primer paso.',
+    submit: 'Crear cuenta',
+  },
+  forgot: {
+    title: 'Recupera tu acceso',
+    subtitle: 'Te enviaremos un enlace para elegir una nueva contraseña.',
+    submit: 'Enviar enlace',
+  },
+  reset: {
+    title: 'Elige una nueva contraseña',
+    subtitle: 'Al guardarla, cerraremos las sesiones anteriores de tu cuenta.',
+    submit: 'Guardar contraseña',
+  },
+  forgotLink: 'Olvidé mi contraseña',
+  registerLink: 'Crear una cuenta',
+  loginLink: 'Ya tengo cuenta',
+  recoverySent:
+    'Si existe una cuenta con ese correo, recibirás un enlace para restablecer tu contraseña.',
+  resetDone: 'Contraseña actualizada. Ya puedes iniciar sesión.',
+  genericError: 'No pudimos completar la solicitud. Inténtalo de nuevo.',
+  offline: 'No pudimos conectar. Comprueba tu conexión e inténtalo de nuevo.',
+  expired: 'Tu sesión venció. Vuelve a intentarlo.',
+  limited:
+    'Has realizado varios intentos. Espera un minuto antes de continuar.',
+  invalidLink: 'Este enlace no es válido o ha vencido. Solicita uno nuevo.',
+  verifyTitle: 'Revisa tu correo',
+  verifyIntro: 'Te enviamos un enlace de verificación a',
+  verifyHelp:
+    'Abre el enlace con esta misma cuenta. Si no lo encuentras, revisa la carpeta de correo no deseado.',
+  verifying: 'Verificando tu correo…',
+  resend: 'Reenviar correo',
+  sent: 'Enviamos otro enlace de verificación.',
+  cooldown: 'Podrás reenviar el correo en',
+  seconds: 'segundos.',
+  checkVerified: 'Ya verifiqué mi correo',
+  notVerified: 'Tu correo aún no está verificado.',
+  wrongVerification:
+    'No pudimos verificar el enlace. Comprueba que corresponde a esta cuenta o solicita uno nuevo.',
+  logout: 'Cerrar sesión',
+  workspaceTitle: 'Tu espacio comienza aquí',
+  workspaceIntro:
+    'Tu cuenta está lista. El editor de notas y actividades será el siguiente paso.',
+  verified: 'Correo verificado',
+  account: 'Tu cuenta',
+  retry: 'Reintentar',
+  loading: 'Cargando tu cuenta…',
+} as const

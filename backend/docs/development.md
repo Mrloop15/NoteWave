@@ -35,9 +35,9 @@ En backend: `composer validate --strict`, `composer lint`, `composer test` y `ph
 
 Para navegador: `npx.cmd playwright install chromium` y `npm.cmd run test:e2e` en frontend. Playwright inicia ambos servidores si no están activos; cubre conexión vía proxy, navegación y reintentos en Chromium de escritorio y móvil emulado. No sustituye pruebas en Safari/iPhone ni Android reales. En Linux/macOS usar npm y npx sin .cmd.
 
-Las pruebas de salud no consultan la base. Persistencia local se comprobó aparte mediante escritura/lectura dentro de una transacción revertida. Las pruebas de aislamiento y concurrencia llegarán con los módulos correspondientes.
+Las pruebas de salud no consultan la base. Las pruebas de identidad usan SQLite en memoria; los recorridos completos de cuentas usan MariaDB en la base separada notewave_e2e. Ver [cuentas, correo local y pruebas](identity.md).
 
-No hay CI activa: su configuración se conserva en docs/ci/github-actions.example.yml para un futuro repositorio. El correo, workers y scheduler se activarán al implementar los flujos que los necesiten.
+No hay CI activa: su configuración se conserva en docs/ci/github-actions.example.yml. El correo de identidad requiere Mailpit y un worker de cola; consulta [las instrucciones](identity.md). Scheduler pendiente de los módulos que lo necesiten.
 
 ## Producción
 

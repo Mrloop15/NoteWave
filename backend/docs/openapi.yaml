@@ -1,8 +1,12 @@
 openapi: 3.1.0
 info:
   title: NoteWave API
-  version: 0.1.0
-  description: Implemented foundation endpoints only. Account and content endpoints are planned.
+  version: 0.2.0
+  description: >-
+    Session identity and health endpoints. Send Accept application/json.
+    Initialize CSRF with /sanctum/csrf-cookie, then echo the decoded XSRF-TOKEN
+    cookie as X-XSRF-TOKEN on mutations. Cookies must be included.
+    Private responses use Cache-Control no-store. Content endpoints are planned.
 servers:
   - url: /
 paths:
@@ -20,8 +24,219 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/Healthy'
+  /sanctum/csrf-cookie:
+    get:
+      operationId: initializeCsrf
+      responses:
+        '204':
+          description: Session and readable XSRF-TOKEN cookies initialized.
+  /register:
+    post:
+      operationId: register
+      parameters:
+        - $ref: '#/components/parameters/Csrf'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password, password_confirmation]
+              properties:
+                name: { type: string, maxLength: 100 }
+                email: { type: string, format: email, maxLength: 254 }
+                password: { type: string, minLength: 12, description: Maximum 72 UTF-8 bytes. }
+                password_confirmation: { type: string }
+      responses:
+        '201': { description: Account created, session rotated and verification email queued. }
+        '419': { $ref: '#/components/responses/CsrfError' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /login:
+    post:
+      operationId: login
+      parameters:
+        - $ref: '#/components/parameters/Csrf'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string }
+      responses:
+        '200':
+          description: Authenticated; session ID rotated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  two_factor: { const: false }
+        '419': { $ref: '#/components/responses/CsrfError' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /logout:
+    post:
+      operationId: logout
+      security: [{ session: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Csrf'
+      responses:
+        '204': { description: Session invalidated and CSRF token regenerated. }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '419': { $ref: '#/components/responses/CsrfError' }
+  /api/v1/me:
+    get:
+      operationId: currentUser
+      security: [{ session: [] }]
+      responses:
+        '200':
+          description: Authenticated user only. Also available before email verification.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: object
+                    additionalProperties: false
+                    required: [id, name, email, email_verified_at]
+                    properties:
+                      id: { type: integer }
+                      name: { type: string }
+                      email: { type: string, format: email }
+                      email_verified_at: { type: [string, 'null'], format: date-time }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /forgot-password:
+    post:
+      operationId: requestPasswordReset
+      parameters:
+        - $ref: '#/components/parameters/Csrf'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: { type: string, format: email }
+      responses:
+        '200': { description: Generic message for known, unknown and broker-throttled email addresses. }
+        '419': { $ref: '#/components/responses/CsrfError' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /reset-password:
+    post:
+      operationId: resetPassword
+      parameters:
+        - $ref: '#/components/parameters/Csrf'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, token, password, password_confirmation]
+              properties:
+                email: { type: string, format: email }
+                token: { type: string }
+                password: { type: string, minLength: 12, description: Maximum 72 UTF-8 bytes. }
+                password_confirmation: { type: string }
+      responses:
+        '200': { description: Password changed, token consumed and previous database sessions revoked. User must log in. }
+        '419': { $ref: '#/components/responses/CsrfError' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /email/verification-notification:
+    post:
+      operationId: resendVerification
+      security: [{ session: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Csrf'
+      responses:
+        '202': { description: Verification email queued. }
+        '204': { description: Email already verified. }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '419': { $ref: '#/components/responses/CsrfError' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /email/verify/{id}/{hash}:
+    get:
+      operationId: verifyEmail
+      security: [{ session: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer } }
+        - { name: hash, in: path, required: true, schema: { type: string } }
+        - { name: expires, in: query, required: true, schema: { type: integer } }
+        - { name: signature, in: query, required: true, schema: { type: string } }
+      responses:
+        '204': { description: Matching authenticated account verified using an unexpired relative signed URL. }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: Invalid or expired signature, wrong user ID or email hash. }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /user/confirm-password:
+    post:
+      operationId: confirmPassword
+      summary: Fortify reauthentication endpoint reserved for future sensitive operations.
+      security: [{ session: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Csrf'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [password]
+              properties:
+                password: { type: string }
+      responses:
+        '201': { description: Password confirmation timestamp stored in session. }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '419': { $ref: '#/components/responses/CsrfError' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /user/confirmed-password-status:
+    get:
+      operationId: passwordConfirmationStatus
+      security: [{ session: [] }]
+      responses:
+        '200':
+          description: Whether password confirmation is still valid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  confirmed: { type: boolean }
+        '401': { $ref: '#/components/responses/Unauthorized' }
 components:
+  securitySchemes:
+    session:
+      type: apiKey
+      in: cookie
+      name: notewave_session
+      description: HttpOnly session cookie; name may vary per environment. No bearer tokens accepted.
+  parameters:
+    Csrf:
+      name: X-XSRF-TOKEN
+      in: header
+      required: true
+      schema: { type: string }
   responses:
+    Unauthorized:
+      description: Authenticated session required.
+    CsrfError:
+      description: CSRF token missing or expired; initialize cookies and retry explicitly.
+    ValidationError:
+      description: Invalid input or credentials. Includes message and errors keyed by field where applicable.
+    RateLimited:
+      description: Too many requests; retry after the Retry-After interval.
     Healthy:
       description: Application process responds successfully.
       headers:
