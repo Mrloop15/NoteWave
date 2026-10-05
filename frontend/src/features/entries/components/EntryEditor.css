@@ -1,0 +1,98 @@
+.entry-editor {
+  background: var(--color-surface);
+  border-left: 1px solid var(--color-border);
+  padding: 28px;
+  min-width: 0;
+}
+.editor-top,
+.editor-footer,
+.editor-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.editor-kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--color-accent);
+  font-size: 0.85rem;
+}
+h2 {
+  font-size: 1.4rem;
+  letter-spacing: -0.035em;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+  margin: 20px 0;
+}
+fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.field {
+  margin: 18px 0;
+}
+.field input,
+textarea {
+  width: 100%;
+  border: 1px solid #a8bdb9;
+  border-radius: 9px;
+  padding: 12px;
+  font: inherit;
+  color: var(--color-text);
+  background: white;
+}
+textarea {
+  resize: vertical;
+  min-height: 210px;
+  line-height: 1.7;
+}
+textarea[aria-invalid='true'] {
+  border-color: #922c22;
+}
+.editor-footer {
+  padding: 12px 0;
+}
+.save-state {
+  font-size: 0.78rem;
+  color: var(--color-muted);
+}
+.primary-button,
+.delete-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+.editor-bottom {
+  border-top: 1px solid var(--color-border);
+  padding-top: 14px;
+  margin-top: 20px;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+.delete-button {
+  background: transparent;
+  border: 0;
+  color: #9a3329;
+  padding: 10px 5px;
+  min-height: 44px;
+}
+.icon-button {
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-muted);
+  min-width: 44px;
+  min-height: 44px;
+}
+@media (max-width: 760px) {
+  .entry-editor {
+    border-left: 0;
+    padding: 22px 20px;
+    min-height: calc(100dvh - 80px);
+  }
+}

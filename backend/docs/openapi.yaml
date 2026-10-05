@@ -1,15 +1,21 @@
 openapi: 3.1.0
 info:
   title: NoteWave API
-  version: 0.2.0
+  version: 0.3.0
   description: >-
     Session identity and health endpoints. Send Accept application/json.
     Initialize CSRF with /sanctum/csrf-cookie, then echo the decoded XSRF-TOKEN
     cookie as X-XSRF-TOKEN on mutations. Cookies must be included.
-    Private responses use Cache-Control no-store. Content endpoints are planned.
+    Private responses use Cache-Control no-store. Content requires verified email.
 servers:
   - url: /
 paths:
+  /api/v1/entries:
+    $ref: './entries.openapi.yaml#/paths/~1api~1v1~1entries'
+  /api/v1/entries/{entry}:
+    $ref: './entries.openapi.yaml#/paths/~1api~1v1~1entries~1{entry}'
+  /api/v1/entries/{entry}/completion:
+    $ref: './entries.openapi.yaml#/paths/~1api~1v1~1entries~1{entry}~1completion'
   /health/live:
     get:
       operationId: getLiveness

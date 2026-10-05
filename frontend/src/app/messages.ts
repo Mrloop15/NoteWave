@@ -8,11 +8,11 @@ export const messages = {
   eyebrow: 'UN ESPACIO PARA TUS IDEAS',
   headline: 'Dale espacio a lo que tienes en mente.',
   intro:
-    'Tus ideas, tus pendientes y ese pensamiento que no quieres perder. Estamos preparando un lugar para reunirlos.',
+    'Tus ideas, tus pendientes y ese pensamiento que no quieres perder. Un lugar para reunirlos.',
   badge: 'En construcción',
   progressTitle: 'Todo comienza con una idea',
   progressText:
-    'Ya puedes crear tu cuenta y verificar tu correo. Estamos preparando el editor para organizar tus notas y actividades.',
+    'Crea tu cuenta y organiza tus notas y actividades. El dictado por voz será el siguiente paso.',
   features: [
     {
       title: 'Captura tus ideas',
@@ -24,7 +24,8 @@ export const messages = {
     },
     {
       title: 'Exprésate con tu voz',
-      description: 'Dicta, revisa tus palabras y decide qué guardar.',
+      description:
+        'Próximamente: dicta, revisa tus palabras y decide qué guardar.',
     },
   ],
   service: {

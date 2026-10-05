@@ -4,10 +4,12 @@ use App\Http\Controllers\Operations\HealthController;
 use App\Http\Middleware\NormalizeIdentityInput;
 use App\Http\Middleware\PrivateResponses;
 use App\Http\Middleware\ValidateRelativeSignature;
+use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Route;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -21,6 +23,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();
+        $middleware->prependToPriorityList(SubstituteBindings::class, EnsureEmailIsVerified::class);
+        $middleware->trimStrings(except: ['description']);
         $middleware->append(PrivateResponses::class);
         $middleware->web(append: [NormalizeIdentityInput::class]);
         $middleware->redirectGuestsTo('/auth/login');

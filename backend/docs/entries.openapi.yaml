@@ -1,0 +1,219 @@
+openapi: 3.1.0
+info:
+  title: NoteWave Entries
+  version: 0.3.0
+  description: >-
+    Private plain-text content. Verified session required. 120 requests/minute/user.
+    All mutations require CSRF, initialized with /sanctum/csrf-cookie.
+    Owner and kind cannot be changed. Missing and foreign IDs both return 404.
+    Mutations lock the owned row and compare version; stale versions return 409.
+    No-op updates keep the version. Successful changes increment it once.
+servers: [{ url: / }]
+security: [{ session: [] }]
+paths:
+  /api/v1/entries:
+    get:
+      operationId: listEntries
+      description: Ordered by updated_at descending then ID descending. Search is a literal substring in title or description; collation governs case/accent matching. Status restricts results to tasks. Pagination reflects current data and is not a snapshot.
+      parameters:
+        - {
+            name: kind,
+            in: query,
+            schema: { type: string, enum: [note, task] },
+          }
+        - {
+            name: status,
+            in: query,
+            schema: { type: string, enum: [pending, completed] },
+          }
+        - { name: q, in: query, schema: { type: string, maxLength: 200 } }
+        - {
+            name: page,
+            in: query,
+            schema: { type: integer, minimum: 1, maximum: 10000, default: 1 },
+          }
+        - {
+            name: per_page,
+            in: query,
+            schema: { type: integer, minimum: 1, maximum: 50, default: 20 },
+          }
+      responses:
+        "200":
+          description: Owned entries, Laravel pagination links and metadata.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta, links]
+                properties:
+                  data:
+                    {
+                      type: array,
+                      items: { $ref: "#/components/schemas/Entry" },
+                    }
+                  links: { type: object }
+                  meta:
+                    type: object
+                    required: [current_page, last_page, per_page, total]
+                    properties:
+                      current_page: { type: integer }
+                      last_page: { type: integer }
+                      per_page: { type: integer }
+                      total: { type: integer }
+        "401": { description: Session required. }
+        "403": { description: Email verification required. }
+        "422": { $ref: "./openapi.yaml#/components/responses/ValidationError" }
+        "429": { $ref: "./openapi.yaml#/components/responses/RateLimited" }
+    post:
+      operationId: createEntry
+      parameters: [{ $ref: "./openapi.yaml#/components/parameters/Csrf" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [kind, title]
+              properties:
+                kind: { type: string, enum: [note, task] }
+                title: { type: string, minLength: 1, maxLength: 200 }
+                description:
+                  { type: [string, "null"], maxLength: 20000, default: "" }
+              description: Title is trimmed. Description whitespace preserved; null becomes empty. Internal fields including owner, version and completed_at are prohibited.
+      responses:
+        "201": { $ref: "#/components/responses/Entry" }
+        "401": { description: Session required. }
+        "403": { description: Email verification required. }
+        "419": { $ref: "./openapi.yaml#/components/responses/CsrfError" }
+        "422": { $ref: "./openapi.yaml#/components/responses/ValidationError" }
+        "429": { $ref: "./openapi.yaml#/components/responses/RateLimited" }
+  /api/v1/entries/{entry}:
+    parameters: [{ $ref: "#/components/parameters/EntryId" }]
+    get:
+      operationId: getEntry
+      responses:
+        "200": { $ref: "#/components/responses/Entry" }
+        "401": { description: Session required. }
+        "403": { description: Email verification required. }
+        "404": { description: Entry unavailable. }
+        "429": { $ref: "./openapi.yaml#/components/responses/RateLimited" }
+    patch:
+      operationId: updateEntry
+      parameters: [{ $ref: "./openapi.yaml#/components/parameters/Csrf" }]
+      requestBody: { $ref: "#/components/requestBodies/Update" }
+      responses: &mutationResponses
+        "200": { $ref: "#/components/responses/Entry" }
+        "401": { description: Session required. }
+        "403": { description: Email verification required. }
+        "404": { description: Entry unavailable. }
+        "409":
+          {
+            description: Version conflict. Retain the draft and fetch the latest entry before explicit retry.,
+          }
+        "419": { $ref: "./openapi.yaml#/components/responses/CsrfError" }
+        "422": { $ref: "./openapi.yaml#/components/responses/ValidationError" }
+        "429": { $ref: "./openapi.yaml#/components/responses/RateLimited" }
+    put:
+      operationId: updateEntryViaPut
+      description: Alias of PATCH; omitted fields remain unchanged.
+      parameters: [{ $ref: "./openapi.yaml#/components/parameters/Csrf" }]
+      requestBody: { $ref: "#/components/requestBodies/Update" }
+      responses: *mutationResponses
+    delete:
+      operationId: deleteEntry
+      parameters: [{ $ref: "./openapi.yaml#/components/parameters/Csrf" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [version]
+              properties:
+                version: { type: integer, minimum: 1 }
+      responses:
+        "204": { description: Entry permanently deleted. }
+        "401": { description: Session required. }
+        "403": { description: Email verification required. }
+        "404": { description: Entry unavailable. }
+        "409": { description: Stale version; entry was not deleted. }
+        "419": { $ref: "./openapi.yaml#/components/responses/CsrfError" }
+        "422": { $ref: "./openapi.yaml#/components/responses/ValidationError" }
+        "429": { $ref: "./openapi.yaml#/components/responses/RateLimited" }
+  /api/v1/entries/{entry}/completion:
+    parameters: [{ $ref: "#/components/parameters/EntryId" }]
+    patch:
+      operationId: setEntryCompletion
+      description: Explicit boolean for tasks only; notes return 422. Same state with current version is a no-op. Stale version always returns 409.
+      parameters: [{ $ref: "./openapi.yaml#/components/parameters/Csrf" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [version, completed]
+              properties:
+                version: { type: integer, minimum: 1 }
+                completed: { type: boolean }
+      responses: *mutationResponses
+components:
+  securitySchemes:
+    session: { $ref: "./openapi.yaml#/components/securitySchemes/session" }
+  parameters:
+    EntryId:
+      name: entry
+      in: path
+      required: true
+      schema: { type: string, description: ULID }
+  schemas:
+    Entry:
+      type: object
+      additionalProperties: false
+      required:
+        [
+          id,
+          kind,
+          title,
+          description,
+          completed_at,
+          version,
+          created_at,
+          updated_at,
+        ]
+      properties:
+        id: { type: string }
+        kind: { type: string, enum: [note, task] }
+        title: { type: string, maxLength: 200 }
+        description: { type: string, maxLength: 20000 }
+        completed_at:
+          {
+            type: [string, "null"],
+            format: date-time,
+            description: Always null for notes.,
+          }
+        version: { type: integer, minimum: 1 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+  requestBodies:
+    Update:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [version]
+            properties:
+              version: { type: integer, minimum: 1 }
+              title: { type: string, minLength: 1, maxLength: 200 }
+              description: { type: [string, "null"], maxLength: 20000 }
+  responses:
+    Entry:
+      description: Entry without owner identifiers. Timestamps are UTC ISO 8601.
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [data]
+            properties:
+              data: { $ref: "#/components/schemas/Entry" }
