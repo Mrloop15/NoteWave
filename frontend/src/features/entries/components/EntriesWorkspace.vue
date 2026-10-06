@@ -33,6 +33,9 @@
         </button>
       </nav>
       <div class="nav-account">
+        <RouterLink class="account-link" to="/app/account">{{
+          text.account
+        }}</RouterLink>
         <p class="account-name">{{ session.user?.name }}</p>
         <p class="account-email">{{ session.user?.email }}</p>
         <span class="verified-badge">{{ text.verified }}</span

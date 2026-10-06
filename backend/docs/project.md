@@ -16,7 +16,7 @@ Cada aplicación conserva sus dependencias y lockfile. La documentación compart
 
 ## Estado
 
-Vue y Laravel ejecutables, bienvenida adaptable, proxy, salud, registro, login/logout, verificación de correo y recuperación de contraseña. Base local notewave en MariaDB de XAMPP, con usuario dedicado y cinco migraciones aplicadas; pruebas de identidad en base separada. Notas y actividades privadas implementadas con editor, búsqueda, filtros y versiones. Dictado simulado y controles visuales compartidos implementados; reconocimiento real y PWA pendientes. Ver [dictado](transcription.md). Ver [contenido](entries.md).
+Vue y Laravel ejecutables, bienvenida adaptable, proxy, salud, registro, login/logout, verificación de correo y recuperación de contraseña. Base local notewave en MariaDB de XAMPP, con usuario dedicado y seis migraciones aplicadas; pruebas de identidad en base separada. Notas y actividades privadas implementadas con editor, búsqueda, filtros y versiones. Dictado simulado y controles visuales compartidos implementados; reconocimiento real y PWA pendientes. Perfil, idioma, zona horaria y cambio de contraseña disponibles en [Mi cuenta](account.md). Ver [dictado](transcription.md). Ver [contenido](entries.md).
 
 Ejecutar `composer dev` en backend y `npm.cmd run dev` en frontend. Abrir http://127.0.0.1:5173.
 

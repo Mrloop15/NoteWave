@@ -27,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        RateLimiter::for('account-password', fn (Request $request) => Limit::perMinute(5)->by((string) $request->user()?->id));
         Route::bind('transcription', fn (string $id) => Transcription::where('user_id', request()->user()?->id)->whereKey($id)->firstOrFail());
         RateLimiter::for('transcription-uploads', fn (Request $request) => Limit::perMinute(5)->by((string) $request->user()?->id));
         Route::bind('entry', fn (string $id) => Entry::where('user_id', request()->user()?->id)->whereKey($id)->firstOrFail());

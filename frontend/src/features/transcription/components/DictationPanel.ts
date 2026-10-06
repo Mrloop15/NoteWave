@@ -4,6 +4,7 @@ import { useDictation } from '../composables/useDictation'
 import { dictationMessages as text } from '../messages'
 import AppDropdown from '../../../components/ui/AppDropdown.vue'
 import AudioPreview from '../../../components/ui/AudioPreview.vue'
+import { useSessionStore } from '../../../stores/session'
 
 export default defineComponent({
   components: { Mic, Square, X, Send, Plus, AppDropdown, AudioPreview },
@@ -14,6 +15,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const voice = reactive(useDictation((active) => emit('active', active)))
+    voice.language = useSessionStore().user?.dictation_language ?? 'es'
     const notice = ref('')
     function insert() {
       if (props.disabled || voice.state !== 'ready' || !voice.transcript.trim())

@@ -12,5 +12,8 @@ return [
     'boolean' => 'El campo :attribute debe ser verdadero o falso.',
     'in' => 'El valor de :attribute no es válido.',
     'prohibited' => 'No se permite modificar :attribute en esta operación.',
-    'attributes' => ['name' => 'nombre', 'email' => 'correo', 'password' => 'contraseña', 'title' => 'título', 'description' => 'descripción', 'kind' => 'tipo', 'version' => 'versión'],
+    'timezone' => 'Elige una zona horaria válida.',
+    'present' => 'El campo :attribute debe estar presente.',
+    'different' => 'El campo :attribute debe ser diferente de :other.',
+    'attributes' => ['name' => 'nombre', 'email' => 'correo', 'password' => 'contraseña', 'current_password' => 'contraseña actual', 'title' => 'título', 'description' => 'descripción', 'kind' => 'tipo', 'version' => 'versión', 'dictation_language' => 'idioma del dictado', 'timezone' => 'zona horaria', 'profile_version' => 'versión del perfil'],
 ];

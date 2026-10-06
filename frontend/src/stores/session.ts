@@ -16,6 +16,11 @@ export const useSessionStore = defineStore('session', () => {
     generation++
     user.value = null
   }
+  function replace(updated: SessionUser) {
+    if (user.value?.id !== updated.id) return
+    generation++
+    user.value = updated
+  }
   async function refresh() {
     const requestGeneration = ++generation
     try {
@@ -35,5 +40,5 @@ export const useSessionStore = defineStore('session', () => {
     clear()
     sessionChannel?.postMessage('logout')
   }
-  return { user, refresh, clear, logout }
+  return { user, refresh, clear, logout, replace }
 })

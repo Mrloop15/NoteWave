@@ -1,6 +1,7 @@
 <?php
 
 // Run explicitly against the isolated E2E database, never the development database.
+use App\Actions\Account\UpdateProfile;
 use App\Actions\Entries\WithEntryVersion;
 use App\Models\Entry;
 use App\Models\User;
@@ -31,6 +32,7 @@ if (! $app->environment('e2e') || config('database.default') !== 'mysql' || conf
     throw new RuntimeException('Requires the isolated notewave_e2e MySQL connection.');
 }
 
+$profileMode = ($argv[1] ?? '') === 'profile' || ($argv[6] ?? '') === 'profile';
 if (($argv[1] ?? '') === 'worker') {
     $user = User::findOrFail($argv[2]);
     $entry = Entry::findOrFail($argv[3]);
@@ -44,10 +46,14 @@ if (($argv[1] ?? '') === 'worker') {
         usleep(10000);
     }
     try {
-        app(WithEntryVersion::class)->execute($user, $entry, 1, function (Entry $locked) use ($argv) {
-            usleep(250000);
-            $locked->title = 'Writer '.$argv[5];
-        });
+        if ($profileMode) {
+            app(UpdateProfile::class)->execute($user, ['name' => 'Writer '.$argv[5], 'dictation_language' => 'en', 'timezone' => 'UTC', 'profile_version' => 1]);
+        } else {
+            app(WithEntryVersion::class)->execute($user, $entry, 1, function (Entry $locked) use ($argv) {
+                usleep(250000);
+                $locked->title = 'Writer '.$argv[5];
+            });
+        }
         echo '200';
     } catch (HttpException $error) {
         echo $error->getStatusCode();
@@ -63,7 +69,7 @@ $barrier = sys_get_temp_dir().'/notewave-'.bin2hex(random_bytes(10));
 $workers = [];
 try {
     foreach ([1, 2] as $index) {
-        $process = proc_open([PHP_BINARY, __FILE__, 'worker', (string) $user->id, $entry->id, $barrier, (string) $index], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes, $root);
+        $process = proc_open([PHP_BINARY, __FILE__, 'worker', (string) $user->id, $entry->id, $barrier, (string) $index, $profileMode ? 'profile' : 'entries'], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes, $root);
         if (! is_resource($process)) {
             throw new RuntimeException('Could not start worker.');
         }
@@ -94,7 +100,8 @@ try {
         }
     }
     sort($statuses);
-    if ($statuses !== [200, 409] || $entry->refresh()->version !== 2) {
+    $version = $profileMode ? $user->refresh()->profile_version : $entry->refresh()->version;
+    if ($statuses !== [200, 409] || $version !== 2) {
         throw new RuntimeException('Concurrent writes did not preserve optimistic versioning.');
     }
     $rejected = false;
@@ -106,7 +113,7 @@ try {
     if (! $rejected) {
         throw new RuntimeException('Database did not enforce the note completion constraint.');
     }
-    echo "PASS: concurrent writers returned 200/409; version=2; note constraint enforced.\n";
+    echo 'PASS: '.($profileMode ? 'profile' : 'entries')." writers returned 200/409; version=2; note constraint enforced.\n";
 } finally {
     foreach ($workers as [$process, $pipes]) {
         if (is_resource($process)) {

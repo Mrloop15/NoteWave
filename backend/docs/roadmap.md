@@ -16,6 +16,8 @@
 
 Estado: base ejecutable, base local y flujos de identidad implementados. Registro, sesión, verificación y recuperación funcionan con correo local y pruebas aisladas. MySQL 8.4, correo de producción, staging y reconocimiento de voz real siguen pendientes. El [flujo de dictado simulado](transcription.md) ya incluye captura, revisión, jobs, cuotas y limpieza. El módulo de [contenido](entries.md) ya incluye CRUD, búsqueda, filtros, editor y control de versiones. La raíz contiene sólo frontend y backend. Ver [guía local](development.md) y [cuentas](identity.md).
 
+El bloque de **Mi cuenta** ya incorpora nombre, idioma, zona horaria y cambio de contraseña con revocación de otras sesiones. Exportación, eliminación y PWA siguen pendientes. Ver [implementación y pruebas](account.md).
+
 ## Incrementos de implementación
 
 1. **Base ejecutable:** verificar herramientas locales y soporte de versiones; registrar la matriz PHP/Laravel/Node/MySQL; inicializar Vue y Laravel; configurar MySQL, variables de ejemplo, proxy local, calidad y CI. Salida: instalación y build reproducibles con pasos comprobados.

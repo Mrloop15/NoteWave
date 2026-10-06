@@ -1,0 +1,38 @@
+export const accountMessages = {
+  title: 'Mi cuenta',
+  subtitle: 'Tu espacio, a tu manera.',
+  back: 'Volver a mis notas',
+  profile: 'Perfil y preferencias',
+  profileHelp: 'Personaliza cómo escribes y consultas tus ideas.',
+  name: 'Nombre',
+  email: 'Correo verificado',
+  language: 'Idioma predeterminado del dictado',
+  timezone: 'Zona horaria',
+  browser: 'Automática · zona de este dispositivo',
+  timezoneHelp:
+    'Las fechas de tus notas se mostrarán en esta zona. El idioma se aplicará a nuevas grabaciones.',
+  spanish: 'Español',
+  english: 'Inglés',
+  save: 'Guardar preferencias',
+  saving: 'Guardando…',
+  saved: 'Preferencias guardadas.',
+  reload: 'Cargar perfil guardado',
+  conflict:
+    'El perfil cambió en otra pestaña. Conservamos tus cambios; carga la versión guardada para revisarlos.',
+  discard: 'Hay cambios sin guardar. ¿Quieres descartarlos y continuar?',
+  security: 'Contraseña y acceso',
+  securityHelp:
+    'Usa una frase de al menos 12 caracteres. Al cambiarla, se cerrarán las sesiones de otros dispositivos.',
+  currentPassword: 'Contraseña actual',
+  password: 'Nueva contraseña',
+  confirmPassword: 'Confirmar nueva contraseña',
+  changePassword: 'Actualizar contraseña',
+  passwordSaved: 'Contraseña actualizada. Las demás sesiones se han cerrado.',
+  passwordNotice:
+    'Por seguridad, vuelve a escribir las contraseñas si necesitas reintentar.',
+  loadError: 'No pudimos cargar las zonas horarias. Vuelve a intentarlo.',
+  retry: 'Volver a intentar',
+  loading: 'Cargando preferencias…',
+  pending: 'Cambios sin guardar',
+  wait: 'Espera a que termine el guardado.',
+} as const

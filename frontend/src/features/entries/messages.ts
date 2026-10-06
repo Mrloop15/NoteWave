@@ -77,5 +77,5 @@ export const entryMessages = {
   saveBeforeComplete: 'Guarda el borrador antes de cambiar el estado.',
   logout: 'Cerrar sesión',
   verified: 'Correo verificado',
-  account: 'Cuenta',
+  account: 'Mi cuenta',
 } as const

@@ -12,6 +12,9 @@ const user: SessionUser = {
   name: 'Ana',
   email: 'ana@example.test',
   email_verified_at: null,
+  dictation_language: 'es',
+  timezone: null,
+  profile_version: 1,
 }
 beforeEach(() => {
   setActivePinia(createPinia())

@@ -3,6 +3,9 @@ export interface SessionUser {
   name: string
   email: string
   email_verified_at: string | null
+  dictation_language: 'es' | 'en'
+  timezone: string | null
+  profile_version: number
 }
 
 export type AuthMode = 'login' | 'register' | 'forgot' | 'reset'

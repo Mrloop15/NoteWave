@@ -14,6 +14,9 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'email_verified_at' => $this->email_verified_at?->toISOString(),
+            'dictation_language' => $this->dictation_language ?? 'es',
+            'timezone' => $this->timezone,
+            'profile_version' => $this->profile_version ?? 1,
         ];
     }
 }

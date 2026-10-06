@@ -36,3 +36,5 @@ Incremento local del 5 de octubre de 2026. Grabación, reproducción, envío, jo
 Falta proveedor real, pruebas con habla consentida y dispositivos físicos iPhone/Android, reintentos y presupuesto del servicio externo, revisión operativa de FFmpeg y despliegue. Este incremento no declara completa la fase de voz del MVP. Contrato: [OpenAPI](transcription.openapi.yaml).
 
 Comprobación local: 30 pruebas backend, 22 frontend y 9 recorridos de navegador aprobados, más las pruebas de concurrencia de entradas/dictado y procesamiento en cola de MariaDB. Lint, formato, tipos, build y Composer correctos. Dropdown, reproductor y revisión móvil inspeccionados mediante capturas.
+
+El idioma inicial de nuevos paneles toma la preferencia de [Mi cuenta](account.md); puede cambiarse antes de cada grabación.

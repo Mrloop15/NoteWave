@@ -6,7 +6,7 @@ Node 24, PHP 8.2 y Composer. Base local: **MariaDB 10.4.32 de XAMPP**, escuchand
 
 Se creó una base exclusiva `notewave` y el usuario `notewave_app`, con permisos únicamente sobre esa base. Su contraseña aleatoria está en `backend/.env`, excluido de Git. No se usa root como usuario de la aplicación.
 
-Las tres migraciones iniciales (usuarios/sesiones, caché y jobs) están aplicadas. No volver a crear el usuario ni sobrescribir .env. No se modificaron bases de otros proyectos.
+Las seis migraciones actuales (usuarios/sesiones, caché, jobs, entradas, transcripciones y preferencias de cuenta) están aplicadas. No volver a crear el usuario ni sobrescribir .env. No se modificaron bases de otros proyectos.
 
 ## Arrancar
 
@@ -35,7 +35,7 @@ En backend: `composer validate --strict`, `composer lint`, `composer test` y `ph
 
 Para navegador: `npx.cmd playwright install chromium` y `npm.cmd run test:e2e` en frontend. Playwright inicia ambos servidores si no están activos; cubre conexión vía proxy, navegación y reintentos en Chromium de escritorio y móvil emulado. No sustituye pruebas en Safari/iPhone ni Android reales. En Linux/macOS usar npm y npx sin .cmd.
 
-Las pruebas de salud no consultan la base. Las pruebas de identidad usan SQLite en memoria; los recorridos completos de cuentas usan MariaDB en la base separada notewave_e2e. Ver [cuentas, correo local y pruebas](identity.md).
+Las pruebas de salud no consultan la base. Las pruebas de identidad usan SQLite en memoria; los recorridos completos de cuentas usan MariaDB en la base separada notewave_e2e. Ver [cuentas, correo local y pruebas](identity.md) y [preferencias de cuenta](account.md).
 
 No hay CI activa: su configuración se conserva en docs/ci/github-actions.example.yml. El correo de identidad requiere Mailpit y un worker de cola; consulta [las instrucciones](identity.md). El dictado simulado requiere FFmpeg, worker y scheduler; consultar [la guía](transcription.md).
 

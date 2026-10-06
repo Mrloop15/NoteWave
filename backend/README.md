@@ -1,6 +1,6 @@
 # Backend de NoteWave
 
-API Laravel 12 con Fortify y Sanctum: registro, sesiones, verificación, recuperación y usuario actual. Base local MariaDB y migraciones de usuarios, sesiones, caché y colas. Incluye notas y actividades privadas con versiones, búsqueda y filtros; el dictado cuenta con un [flujo simulado](docs/transcription.md), pendiente de proveedor real. Ver [contenido](docs/entries.md). Ver [cuentas y correo local](docs/identity.md).
+API Laravel 12 con Fortify y Sanctum: registro, sesiones, verificación, recuperación y usuario actual. Base local MariaDB y migraciones de usuarios, sesiones, caché y colas. Incluye notas y actividades privadas con versiones, búsqueda y filtros; el dictado cuenta con un [flujo simulado](docs/transcription.md), pendiente de proveedor real. Incluye [Mi cuenta](docs/account.md) con preferencias y cambio de contraseña. Ver [contenido](docs/entries.md). Ver [cuentas y correo local](docs/identity.md).
 
 ## Organización prevista
 

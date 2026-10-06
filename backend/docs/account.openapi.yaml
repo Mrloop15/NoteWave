@@ -1,0 +1,95 @@
+openapi: 3.1.0
+info:
+  title: NoteWave account API
+  version: 0.5.0
+security: [{ session: [] }]
+paths:
+  /api/v1/account/options:
+    get:
+      operationId: accountOptions
+      description: Requires a verified session. Responses are private and no-store.
+      responses:
+        "200":
+          description: Supported IANA timezone identifiers and dictation languages.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: object
+                    required: [timezones, languages]
+                    properties:
+                      timezones: { type: array, items: { type: string } }
+                      languages:
+                        { type: array, items: { type: string, enum: [es, en] } }
+        "401": { $ref: "./openapi.yaml#/components/responses/Unauthorized" }
+        "403": { description: Verified email required. }
+  /api/v1/account/profile:
+    patch:
+      operationId: updateAccountProfile
+      description: Updates only the verified session owner. Changed fields increment profile_version; unchanged values do not. Email and ownership cannot be changed.
+      parameters:
+        - $ref: "./openapi.yaml#/components/parameters/Csrf"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, dictation_language, timezone, profile_version]
+              properties:
+                name: { type: string, minLength: 1, maxLength: 100 }
+                dictation_language: { type: string, enum: [es, en] }
+                timezone:
+                  {
+                    type: [string, "null"],
+                    maxLength: 64,
+                    description: Supported IANA identifier or null for browser timezone.,
+                  }
+                profile_version: { type: integer, minimum: 1 }
+      responses:
+        "200":
+          $ref: "./openapi.yaml#/paths/~1api~1v1~1me/get/responses/200"
+        "401": { $ref: "./openapi.yaml#/components/responses/Unauthorized" }
+        "403": { description: Verified email required. }
+        "409":
+          {
+            description: Stale profile_version; fetch /api/v1/me before an explicit retry.,
+          }
+        "419": { $ref: "./openapi.yaml#/components/responses/CsrfError" }
+        "422": { $ref: "./openapi.yaml#/components/responses/ValidationError" }
+  /api/v1/account/password:
+    put:
+      operationId: changeAccountPassword
+      description: Requires verified session and current password. Maximum five attempts per minute per user. Rotates current session and remember token; revokes other database sessions and pending reset tokens. Current device stays authenticated.
+      parameters:
+        - $ref: "./openapi.yaml#/components/parameters/Csrf"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [current_password, password, password_confirmation]
+              properties:
+                current_password: { type: string }
+                password:
+                  {
+                    type: string,
+                    minLength: 12,
+                    description: Maximum 72 UTF-8 bytes; must differ from current password.,
+                  }
+                password_confirmation: { type: string }
+      responses:
+        "204": { description: Password changed and current session rotated. }
+        "401": { $ref: "./openapi.yaml#/components/responses/Unauthorized" }
+        "403": { description: Verified email required. }
+        "419": { $ref: "./openapi.yaml#/components/responses/CsrfError" }
+        "422": { $ref: "./openapi.yaml#/components/responses/ValidationError" }
+        "429": { $ref: "./openapi.yaml#/components/responses/RateLimited" }
+components:
+  securitySchemes:
+    session:
+      $ref: "./openapi.yaml#/components/securitySchemes/session"

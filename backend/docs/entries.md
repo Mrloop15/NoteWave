@@ -14,7 +14,7 @@ El editor conserva borradores en memoria ante errores de conexión o conflictos 
 - Cada operación requiere sesión verificada, consulta limitada al propietario y Policy. IDs ajenos y ausentes devuelven 404. Mutaciones protegidas con CSRF. Respuestas privadas sin caché.
 - Listado de 20 elementos por página (máximo 50), ordenado por última edición e ID descendentes. Búsqueda literal con parámetros SQL; `%` y `_` no funcionan como comodines. Sensibilidad a mayúsculas y acentos depende de la collation de la base. La paginación no representa una instantánea frente a cambios simultáneos.
 - ULID público; propietario asignado sólo en servidor. `version` comienza en 1. Editar, completar y eliminar bloquean la fila durante una transacción y exigen la versión actual. Un cambio real incrementa la versión; repetir el estado actual con versión vigente no la incrementa. Una versión antigua siempre devuelve 409.
-- `completed_at` y fechas de creación/edición se entregan en UTC; interfaz en zona horaria del navegador. Restricción CHECK en MariaDB/MySQL para notas sin finalización. Borrado de cuenta elimina entradas por clave foránea.
+- `completed_at` y fechas de creación/edición se entregan en UTC; interfaz en la zona elegida en Mi cuenta o, por defecto, la del navegador. Restricción CHECK en MariaDB/MySQL para notas sin finalización. Borrado de cuenta elimina entradas por clave foránea.
 - El índice de propietario/fecha apoya la lista; la búsqueda por subcadena no es full-text. No se ha medido rendimiento con grandes volúmenes.
 
 ## Validación

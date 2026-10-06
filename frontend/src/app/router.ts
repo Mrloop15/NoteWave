@@ -30,6 +30,12 @@ export const router = createRouter({
       meta: { requiresAuth: true, verified: true },
     },
     {
+      path: '/app/account',
+      name: 'account',
+      component: () => import('../pages/AccountPage.vue'),
+      meta: { requiresAuth: true, verified: true },
+    },
+    {
       path: '/',
       name: 'home',
       component: () => import('../pages/HomePage.vue'),

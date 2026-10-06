@@ -7,6 +7,7 @@ import { entriesService } from '../services/entries'
 import { entryError } from '../errors'
 import { entryMessages as text } from '../messages'
 import type { Entry, EntryFilter } from '../types'
+import { formatEntryDate } from '../formatEntryDate'
 
 export function useEntriesWorkspace() {
   const session = useSessionStore(),
@@ -101,11 +102,7 @@ export function useEntriesWorkspace() {
     window.removeEventListener('beforeunload', leave)
   })
   function date(value: string) {
-    return new Intl.DateTimeFormat('es-MX', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    }).format(new Date(value))
+    return formatEntryDate(value, session.user?.timezone)
   }
   return {
     session,
